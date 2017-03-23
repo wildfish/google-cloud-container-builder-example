@@ -24,7 +24,7 @@ steps:
       - build-builder
 
   - id: run-tests
-    name: eu.gcr.io/$PROJECT_ID/gigsnap-builder
+    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
     args: ['./scripts/test.sh']
     waitFor:
       - build

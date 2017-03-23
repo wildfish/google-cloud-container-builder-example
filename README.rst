@@ -40,6 +40,8 @@ start a new build by clicking ``Run trigger`` from the build trigers page or run
 
 This will upload a tar of your workign directory and make use that as the build context.
 
+The details of each build (including the current) can be found in the build history.
+
 # The Config
 
 Depending on the complexity of your container and build process you can specify a docker file to build and leave it
@@ -72,7 +74,7 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
           - build-builder
 
       - id: run-tests
-        name: eu.gcr.io/$PROJECT_ID/gigsnap-builder
+        name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
         args: ['./scripts/test.sh']
         waitFor:
           - build
