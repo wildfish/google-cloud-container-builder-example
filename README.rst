@@ -20,7 +20,25 @@ about the environment of the host, this opens up a lot of flexibility.
 
 # Setup
 
+We recently published an article about setting up a kubernetes cluster on google container engine
+[here](https://wildfish.com/blog/2017/03/14/django-google-container-engine-gke/) which this post is based on.
 
+For setting up your cloud build you will need to open up the cloud console:
+
+1. From the left hand menu select 'Container Registry' from 'Tools'
+2. Select build triggers
+3. Hit Create button
+4. Select your source
+5. Authenticate with the source (eg for github or bitbucket)
+6. Select your repository
+7. Configure your build, this includes branch regex, name and build configuration. Here we are using cloudbuild.yaml.
+
+From now on every time you commit code matching the build regex the build will be triggered. alternatively you can
+start a new build by clicking ``Run trigger`` from the build trigers page or running::
+
+    gcloud container builds submit --config cloudbuild.yaml
+
+This will upload a tar of your workign directory and make use that as the build context.
 
 # The Config
 
@@ -55,7 +73,7 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
 
       - id: run-tests
         name: eu.gcr.io/$PROJECT_ID/gigsnap-builder
-        args: ['inv docker.test']
+        args: ['scripts/test.sh']
         waitFor:
           - build
 

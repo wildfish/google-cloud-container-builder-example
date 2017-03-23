@@ -25,7 +25,7 @@ steps:
 
   - id: run-tests
     name: eu.gcr.io/$PROJECT_ID/gigsnap-builder
-    args: ['inv docker.test']
+    args: ['scripts/test.sh']
     waitFor:
       - build
 
