@@ -57,7 +57,7 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
 
       - id: build
         name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-        args: ['scripts/build.sh']
+        args: ['./scripts/build.sh']
         waitFor:
           - build-builder
 
@@ -67,13 +67,13 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
 
       - id: lint
         name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-        args: ['scripts/lint.sh']
+        args: ['./scripts/lint.sh']
         waitFor:
           - build-builder
 
       - id: run-tests
         name: eu.gcr.io/$PROJECT_ID/gigsnap-builder
-        args: ['scripts/test.sh']
+        args: ['./scripts/test.sh']
         waitFor:
           - build
 
@@ -83,7 +83,7 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
 
       - id: deploy
         name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-        args: ['scripts/deploy.sh $COMMIT_SHA']
+        args: ['./scripts/deploy.sh $COMMIT_SHA']
         waitFor:
           - run-tests
           - lint
