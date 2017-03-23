@@ -111,7 +111,7 @@ our build image (``Dokerfile.builder``) ::
     COPY requirements-ci.txt .
     RUN pip install -r requirements-ci.txt
 
-    ENTRYPOINT ['/bin/sh', '-c']
+    ENTRYPOINT ["/bin/sh", "-c"]
 
 This builds our ``Dockerfile.builder`` inside the cloud-builder base docker image and stores it in a shared docker
 state across all steps. Here we chose to build the builder each time so that our  requirements are always up to date
