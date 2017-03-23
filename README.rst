@@ -1,12 +1,12 @@
 Recently, we have been using Google's container engine for deploying our apps, an intro to which can be found
 [here](https://wildfish.com/blog/2017/03/14/django-google-container-engine-gke/).
 
-Up to now we have been building, testing and deploying our containers from circle-ci, recently however Google have
-released the [cloud container builder](https://cloud.google.com/container-builder/) which has peaked our interest
+Up to now we have been building, testing and deploying our containers from Circle CI, recently however Google have
+released the [cloud container builder](https://cloud.google.com/container-builder/) which has piqued our interest
 for a few reasons:
 
 1. Our images will be built close to where they are being deployed which will hopefully lead to an increase in
-   commit to deploy speed
+   commit to deploy speed.
 2. Having the power to run anything that you can run in a container.
 3. A generous amount of free build time (120 mins/day at the time of writing).
 4. Simple parallelisation of build steps.
@@ -14,7 +14,7 @@ for a few reasons:
 # Introduction
 
 So, what is Google cloud container builder? Simply put, it is a replacement for other CI processes where each build
-step is actually its own docker container with your code mounted at and working directory set to ``/workspace``.
+step is actually its own docker container with your code mounted and working directory set to ``/workspace``.
 This means that your build step can do anything that can be done from inside a container without needing to worry
 about the environment of the host, this opens up a lot of flexibility.
 
@@ -25,20 +25,20 @@ We recently published an article about setting up a kubernetes cluster on google
 
 For setting up your cloud build you will need to open up the cloud console:
 
-1. From the left hand menu select 'Container Registry' from 'Tools'
-2. Select build triggers
-3. Hit Create button
-4. Select your source
-5. Authenticate with the source (eg for github or bitbucket)
-6. Select your repository
+1. From the left hand menu select 'Container Registry' from 'Tools'.
+2. Select build triggers.
+3. Hit the Create button.
+4. Select your source.
+5. Authenticate with the source (eg for GitHub or Bitbucket).
+6. Select your repository.
 7. Configure your build, this includes branch regex, name and build configuration. Here we are using cloudbuild.yaml.
 
-From now on every time you commit code matching the build regex the build will be triggered. alternatively you can
-start a new build by clicking ``Run trigger`` from the build trigers page or running::
+From now on every time you commit code matching the build regex the build will be triggered. Alternatively you can
+start a new build by clicking ``Run trigger`` from the build triggers page or running::
 
     gcloud container builds submit --config cloudbuild.yaml
 
-This will upload a tar of your workign directory and make use that as the build context.
+This will upload a tar of your working directory and use that as the build context.
 
 The details of each build (including the current) can be found in the build history.
 
@@ -154,7 +154,7 @@ we just run ``manage.py test`` with an internal sqlite db.
 Once all of our tests have passed (wait for ``lint`` and ``run-tests``) we deploy our code, tagging the commit sha.
 
 It is important to note that variables like ``$PROJECT_ID`` and ``$COMMIT_SHA`` are not actually environment variables
-but are substituted into you build config at build time. You can pass them into build steps as build environment
+but are substituted into your build config at build time. You can pass them into build steps as build environment
 variables using the ``env`` parameter on a step like so::
 
     ...
@@ -191,7 +191,7 @@ You should also add any environment variables specified in your config.
 
 In figuring this stuff out we hit a few gotchas along the way to do with how the docker state is handled.
 
-The first of gotcha concerns running tests in parallel, it seemed like a great idea to have our unit and selenium tests
+The first concerns running tests in parallel, it seemed like a great idea to have our unit and selenium tests
 running side by side, both spin up their own instances of the web server, db and redis so both should be completely
 independent. In reality however we end up clashing on names based on when containers are created and destroyed by other
 processes. One option would be duplicate services for the different test types, alternatively we could move away from
@@ -199,8 +199,8 @@ compose and manually link our containers.
 
 The second gotcha we came across was inspecting our services. During our testing we inspect our containers to make sure
 the db and redis services are fully running before hooking up our web server instance. Originally we inspected
-localhost for this however, it seems that since our containers are running on the hosts docker engine and not our
-builders we cant actually inspect them like this. Instead we create another container that is a copy of our builder
+localhost for this, however it seems that since our containers are running on the hosts' docker engine and not our
+builders we can't actually inspect them like this. Instead we create another container that is a copy of our builder
 (yup we are running our builder inside our builder to inspect our other containers) and link it to our network. From
 here we can inspect our db, redis and web server using hostnames.
 
@@ -208,7 +208,7 @@ here we can inspect our db, redis and web server using hostnames.
 
 The technology here is really interesting and the ability to run whatever you like without worrying about your
 environment is very attractive. There are however a few things missing though that make it less attractive than the
-alternatives in it's current incarnation.
+alternatives in its current incarnation.
 
 * Currently there is no built in notification for failing tests (email or otherwise). On build status changes messages
   are sent to gclouds pub/sub system which could be utilised to send messages to slack for instance but at the time of
@@ -219,5 +219,5 @@ alternatives in it's current incarnation.
   they are labeled by the container name and not the step id. This seems odd when an id is available as most steps
   will likely use the same image.
 
-Until these are fixed we will be sticking with circle however the service is still in early beta and hopefully these
+Until these are fixed we will be sticking with Circle however the service is still in early beta and hopefully these
 will be addressed fairly early on.
