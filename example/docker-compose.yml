@@ -1,0 +1,22 @@
+version: '2'
+services:
+  redis:
+    image: 'redis:latest'
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_USER=djangostarter
+      - POSTGRES_PASSWORD=password
+  django:
+    build: .
+    environment:
+      - DJANGO_CONFIGURATION=Prod
+      - POSTGRES_USER=djangostarter
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_SERVICE_HOST=postgres
+      - REDIS_SERVICE_HOST=redis
+    links:
+      - postgres
+      - redis
+    ports:
+      - 8000:8000

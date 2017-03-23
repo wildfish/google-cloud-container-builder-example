@@ -1,0 +1,21 @@
+-r ./requirements-ci.in
+pip-tools
+ipython
+ipdb
+Django
+psycopg2
+raven
+WebTest
+django-webtest
+model-mommy
+django-debug-toolbar
+django-model-utils
+django-redis
+hiredis
+django-bootstrap3
+django-vanilla-views
+django-extensions
+django-clear-cache
+uwsgi
+django-configurations
+whitenoise
