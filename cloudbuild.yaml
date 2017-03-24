@@ -34,7 +34,7 @@ steps:
   #
 
   - id: deploy
-    name: gcr.io/cloud-builders/gcloud
+    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
     args: ['./scripts/deploy.sh $COMMIT_SHA']
     waitFor:
       - run-tests
