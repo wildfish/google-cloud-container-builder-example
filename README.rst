@@ -106,9 +106,11 @@ Now lets take a look at these build steps in more detail.
 The first thing we need to do is prepare our build environment. We use the base cloud-builder docker image to prepare
 our build image (``Dokerfile.builder``) ::
 
-    FROM gcr.io/cloud-builders/docker
+    FROM gcr.io/cloud-builders/gcloud
 
     RUN apt-get update && apt-get install python python-pip -y
+    RUN gcloud --quiet components update
+    RUN gcloud --quiet components update kubectl
 
     COPY requirements-ci.txt .
     RUN pip install -r requirements-ci.txt
@@ -215,6 +217,8 @@ alternatives in its current incarnation.
   writing there doesnt appear to be anything existing.
 * There is no support for build secrets. It is possible to use secret data by baking it into your builder image or
   storing it in a bucket somewhere but a system for handling secret data would be very useful.
+* There is also no trivial ways to store variables between steps. This leads to hardcoding lots of substitutions or
+  storing values in files and reading them when needed.
 * Some of the reporting is not quite how I would like. For instance the logs for each step are broken down nicely but
   they are labeled by the container name and not the step id. This seems odd when an id is available as most steps
   will likely use the same image.
