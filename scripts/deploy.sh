@@ -13,4 +13,5 @@ gcloud docker -- push $IMAGE_TAG
 
 gcloud --quiet config set container/cluster ${CLUSTER_NAME}
 gcloud --quiet config set compute/zone ${COMP_ZONE}
-kubectl patch deployment django -p'{"spec":{"template":{"spec":{"containers":[{"name":"django","image":"${IMAGE_TAG}"}]}}}}'
+gcloud --quiet container clusters get-credentials ${CLUSTER_NAME}
+kubectl -- patch deployment django -p'{"spec":{"template":{"spec":{"containers":[{"name":"django","image":"${IMAGE_TAG}"}]}}}}'
