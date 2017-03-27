@@ -15,7 +15,7 @@ steps:
 
   - id: check-home
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['ls', '-lah', '~']
+    args: ['ls', '-lah', '/root']
 
 #
 #  - id: build
