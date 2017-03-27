@@ -1,4 +1,5 @@
 steps:
+
   #
   # Building
   #
@@ -7,35 +8,45 @@ steps:
     name: gcr.io/cloud-builders/docker
     args: ['build', '--rm=false', '-t', 'eu.gcr.io/$PROJECT_ID/gckb-example-builder', '-f', 'Dockerfile.builder', '.']
 
-  - id: build
+
+  - id: check-working-dir
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['./scripts/build.sh']
-    waitFor:
-      - build-builder
+    args: ['ls', '-lah']
 
-  #
-  # Testing
-  #
-
-  - id: lint
+  - id: check-home
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['./scripts/lint.sh']
-    waitFor:
-      - build-builder
+    args: ['ls', '-lah', '~']
 
-  - id: run-tests
-    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['./scripts/test.sh']
-    waitFor:
-      - build
-
-  #
-  # Deploying
-  #
-
-  - id: deploy
-    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['./scripts/deploy.sh $COMMIT_SHA']
-    waitFor:
-      - run-tests
-      - lint
+#
+#  - id: build
+#    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
+#    args: ['./scripts/build.sh']
+#    waitFor:
+#      - build-builder
+#
+#  #
+#  # Testing
+#  #
+#
+#  - id: lint
+#    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
+#    args: ['./scripts/lint.sh']
+#    waitFor:
+#      - build-builder
+#
+#  - id: run-tests
+#    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
+#    args: ['./scripts/test.sh']
+#    waitFor:
+#      - build
+#
+#  #
+#  # Deploying
+#  #
+#
+#  - id: deploy
+#    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
+#    args: ['./scripts/deploy.sh $COMMIT_SHA']
+#    waitFor:
+#      - run-tests
+#      - lint
