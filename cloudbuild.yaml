@@ -11,11 +11,11 @@ steps:
 
   - id: check-working-dir
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['ls', '-lah']
+    args: ['ls -lah']
 
   - id: check-home
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['ls', '-lah', '/root']
+    args: ['ls -lah /root']
 
 #
 #  - id: build
