@@ -169,6 +169,10 @@ variables using the ``env`` parameter on a step like so::
 
 A full list of substitutions can be found [here](https://cloud.google.com/container-builder/docs/api/build-requests#substitutions).
 
+**NOTE:** We cannot currently run the full deployment which would deploy to google container engine due to a lack of
+secrets handling. This could be achieved in by either baking suitable credentials into the builder or pulling them from
+some private resource.
+
 # Testing your builders locally
 
 There is a little bit of magic that goes into running your builders locally the same as they do during a build. Firstly
@@ -216,7 +220,8 @@ alternatives in its current incarnation.
   are sent to gclouds pub/sub system which could be utilised to send messages to slack for instance but at the time of
   writing there doesnt appear to be anything existing.
 * There is no support for build secrets. It is possible to use secret data by baking it into your builder image or
-  storing it in a bucket somewhere but a system for handling secret data would be very useful.
+  storing it in a bucket somewhere but a system for handling secret data would be very useful. This is also currently
+  preventing deploying using `kubectl` but is currently in development.
 * There is also no trivial ways to store variables between steps. This leads to hardcoding lots of substitutions or
   storing values in files and reading them when needed.
 * Some of the reporting is not quite how I would like. For instance the logs for each step are broken down nicely but

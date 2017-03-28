@@ -11,7 +11,12 @@ COMP_ZONE=europe-west1-d
 gcloud docker -- tag $IMAGE_NAME $IMAGE_TAG
 gcloud docker -- push $IMAGE_TAG
 
-gcloud --quiet config set project ${PROJECT_ID}
-gcloud --quiet config set container/cluster ${CLUSTER_NAME}
-gcloud --quiet config set compute/zone ${COMP_ZONE}
-kubectl patch deployment django -p'{"spec":{"template":{"spec":{"containers":[{"name":"django","image":"${IMAGE_TAG}"}]}}}}'
+# currently accessing k8s is not possible due to secrets handling
+# for api scopes but when available deploying to gke will look something
+# like this
+#
+# gcloud --quiet config set project ${PROJECT_ID}
+# gcloud --quiet config set container/cluster ${CLUSTER_NAME}
+# gcloud --quiet config set compute/zone ${COMP_ZONE}
+# gcloud --quiet container clusters get-credentials ${CLUSTER_NAME}
+# kubectl patch deployment django -p'{"spec":{"template":{"spec":{"containers":[{"name":"django","image":"${IMAGE_TAG}"}]}}}}'
