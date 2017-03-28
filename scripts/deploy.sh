@@ -2,6 +2,7 @@
 cd `dirname $0`/..
 
 set -e
+set -x
 
 IMAGE_NAME=eu.gcr.io/${PROJECT_ID}/gckb-example
 IMAGE_TAG=${IMAGE_NAME}:$1
@@ -18,8 +19,8 @@ gcloud docker -- push $IMAGE_TAG
 gsutil cp gs://${CREDS_BUCKET_NAME}/creds.json /tmp
 gcloud --quiet auth activate-service-account --key-file=/tmp/creds.json
 
-gcloud --quiet config set project ${PROJECT_ID}
-gcloud --quiet config set container/cluster ${CLUSTER_NAME}
-gcloud --quiet config set compute/zone ${COMP_ZONE}
-gcloud --quiet container clusters get-credentials ${CLUSTER_NAME}
+gcloud config set project ${PROJECT_ID}
+gcloud config set container/cluster ${CLUSTER_NAME}
+gcloud config set compute/zone ${COMP_ZONE}
+gcloud container clusters get-credentials ${CLUSTER_NAME}
 kubectl patch deployment django -p"{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"django\",\"image\":\"${IMAGE_TAG}\"}]}}}}"
