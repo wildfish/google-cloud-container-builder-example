@@ -10,13 +10,19 @@ steps:
 
   - id: ls
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
-    args: ['ls -lah /root']
+    args: ['ls -lah /root/tokencache']
     waitFor:
       - build-builder
 
   - id: env
     name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
     args: ['env']
+    waitFor:
+      - build-builder
+
+  - id: auth-list
+    name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
+    args: ['gcloud auth list']
     waitFor:
       - build-builder
 #
