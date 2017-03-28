@@ -221,7 +221,7 @@ alternatives in its current incarnation.
   writing there doesnt appear to be anything existing.
 * There is no support for build secrets. It is possible to use secret data by baking it into your builder image or
   storing it in a bucket somewhere but a system for handling secret data would be very useful. This is also currently
-  preventing deploying using `kubectl` but is currently in development.
+  preventing deploying using ``kubectl`` but is currently in development.
 * There is also no trivial ways to store variables between steps. This leads to hardcoding lots of substitutions or
   storing values in files and reading them when needed.
 * Some of the reporting is not quite how I would like. For instance the logs for each step are broken down nicely but
