@@ -22,4 +22,4 @@ gcloud --quiet config set project ${PROJECT_ID}
 gcloud --quiet config set container/cluster ${CLUSTER_NAME}
 gcloud --quiet config set compute/zone ${COMP_ZONE}
 gcloud --quiet container clusters get-credentials ${CLUSTER_NAME}
-kubectl patch deployment django -p'{"spec":{"template":{"spec":{"containers":[{"name":"django","image":"${IMAGE_TAG}"}]}}}}'
+kubectl patch deployment django -p"{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"django\",\"image\":\"${IMAGE_TAG}\"}]}}}}"
