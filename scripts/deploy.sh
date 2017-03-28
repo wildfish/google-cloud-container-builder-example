@@ -19,7 +19,6 @@ gcloud docker -- push $IMAGE_TAG
 gsutil cp gs://${CREDS_BUCKET_NAME}/creds.json /tmp
 export GOOGLE_APPLICATION_CREDENTIALS=/tmp/creds.json
 gcloud auth activate-service-account --key-file /tmp/creds.json
-gcloud beta auth application-default activate-service-account --key-file /tmp/creds.json
 
 gcloud config set project ${PROJECT_ID}
 gcloud config set container/cluster ${CLUSTER_NAME}
