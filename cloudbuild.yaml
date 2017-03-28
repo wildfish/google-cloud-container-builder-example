@@ -40,6 +40,7 @@ steps:
     args: ['./scripts/deploy.sh $COMMIT_SHA']
     env:
       - PROJECT_ID=$PROJECT_ID
+      - CREDS_BUCKET_NAME=gckb-example-creds
     waitFor:
       - run-tests
       - lint
