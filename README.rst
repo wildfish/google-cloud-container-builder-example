@@ -49,6 +49,7 @@ at that. In the majority of cases though you will want to perform some inspectio
 will need to create a ``cloudbuild.yaml`` file that will look something like this::
 
     steps:
+
       #
       # Building
       #
@@ -56,6 +57,7 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
       - id: build-builder
         name: gcr.io/cloud-builders/docker
         args: ['build', '--rm=false', '-t', 'eu.gcr.io/$PROJECT_ID/gckb-example-builder', '-f', 'Dockerfile.builder', '.']
+
 
       - id: build
         name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
@@ -86,10 +88,12 @@ will need to create a ``cloudbuild.yaml`` file that will look something like thi
       - id: deploy
         name: eu.gcr.io/$PROJECT_ID/gckb-example-builder
         args: ['./scripts/deploy.sh $COMMIT_SHA']
+        env:
+          - PROJECT_ID=$PROJECT_ID
+          - CREDS_BUCKET_NAME=gckb-example-creds
         waitFor:
           - run-tests
           - lint
-
 
 Above we have used the following build parameters:
 
@@ -108,7 +112,25 @@ our build image (``Dokerfile.builder``) ::
 
     FROM gcr.io/cloud-builders/gcloud
 
+    # install python
     RUN apt-get update && apt-get install python python-pip -y
+
+    # install docker (from the base docker step https://github.com/GoogleCloudPlatform/cloud-builders/blob/master/docker/Dockerfile-1.12.6)
+    RUN \
+       apt-get -y update && \
+       apt-get -y install apt-transport-https ca-certificates curl \
+           # These are necessary for add-apt-respository
+           software-properties-common python-software-properties && \
+       curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add - && \
+       apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D && \
+       add-apt-repository \
+           "deb https://apt.dockerproject.org/repo/ \
+           ubuntu-$(lsb_release -cs) \
+           main" && \
+       apt-get -y update && \
+       apt-get -y install docker-engine=1.12.6-0~ubuntu-trusty
+
+    # update gclod and get kubectl
     RUN gcloud --quiet components update
     RUN gcloud --quiet components update kubectl
 
@@ -121,9 +143,11 @@ This builds our ``Dockerfile.builder`` inside the cloud-builder base docker imag
 state across all steps. Here we chose to build the builder each time so that our  requirements are always up to date
 however it could as easily be pulled from a docker registry or simply use one of the
 [cloud builder base containers](https://github.com/GoogleCloudPlatform/cloud-builders) if you don't have any special
-requirements.
+requirements. In reality we would do a combination of the 2, where we store a base builder image that installs our
+most of our dependencies such as ``python``, ``gcloud``, ``docker`` and ``kubectl`` and extend this per project
+installing our project specific requirements.
 
-In our example we install ``flake8`` so that we can lint our python code, in reality this will likely include more
+In our example we install ``flake8`` so that we can lint our python code, however this will likely include more
 requirements for inspecting your image such as ``docker-compose`` and maybe tools like ``selenium`` and web drivers.
 
 ## build
@@ -169,9 +193,16 @@ variables using the ``env`` parameter on a step like so::
 
 A full list of substitutions can be found [here](https://cloud.google.com/container-builder/docs/api/build-requests#substitutions).
 
-**NOTE:** We cannot currently run the full deployment which would deploy to google container engine due to a lack of
-secrets handling. This could be achieved in by either baking suitable credentials into the builder or pulling them from
-some private resource.
+**NOTE:** The cloud builder doesnt currently support secrets, this prevents the correct auth scopes to be passed into
+you builder to interact with ``kubectl``. For this reason we have some additional work around code that fetches
+credentials for another service account from a private storage bucket and activates that for using with ``kubectl``.
+The code looks like this::
+
+    gsutil cp gs://${CREDS_BUCKET_NAME}/creds.json /tmp
+    export GOOGLE_APPLICATION_CREDENTIALS=/tmp/creds.json
+    gcloud auth activate-service-account --key-file /tmp/creds.json
+
+Secret handling is currently being developed so hopefully this workaround won't be needed for much longer.
 
 # Testing your builders locally
 
