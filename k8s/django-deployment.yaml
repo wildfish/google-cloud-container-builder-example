@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: eu.gcr.io/wildfish-gckb-example/gckb-example
+        image: eu.gcr.io/wildfish-directory/gckb-example
         env:
         - name: DJANGO_CONFIGURATION
           value: Dev
